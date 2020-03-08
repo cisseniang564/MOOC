@@ -1,0 +1,84 @@
+---
+title: "DOC"
+author: "cisse"
+date: "6 mars 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```# importation du jeu de donnees
+dataset = read.csv2('satisfaction_hopital.csv')
+
+#visualisation des donnees
+View(dataset)
+
+# QUESTION 1 : Pour les trois variables catégorielles du fichier (à vous de déterminer de quelles variables il s'agit)
+#présentez les pourcentages de sujets relevant de chacune des modalités.
+# Les trois variables categorielles sont: service, profession et sexe
+
+#Pour la variable sexe
+eff_sexe = table(dataset$sexe)
+#les pourcentages de chaque modalite de la variable sexe
+prop.table(eff_sexe)*100
+
+#Pour la variable profession
+eff_profession = table(dataset$profession)
+#les pourcentages de chaque modalite de la variable profession
+prop.table(eff_profession)*100
+
+#Pour la variable service
+eff_service = table(dataset$service)
+#les pourcentages de chaque modalite de la variable profession
+prop.table(eff_service)*100
+
+#QUESTION 2
+#Pour les autres variables
+#donnez de façon synthétique : moyenne, médiane, écart-type, minimum, maximum, nombre de données disponibles (non manquantes).
+
+
+#Pour utiliser la commande describe, il faudra d'abord installer le package prettyR 
+# il peut se faire de la facon suivante: install.packages('prettyR') et le charger library('prettyR')
+
+describe(dataset, num.desc = c('mean', 'median', 'sd', 'min', 'max', 'valid.n'))
+
+
+#QUESTION 3
+#Faites un histogramme du score de relation (score.relation).
+
+hist(dataset$score.relation,xlab = "Qualité de la relation patient",ylab = "Nb. patient", main="Distribution du score des relations",col="grey")
+
+#QUESTION 4
+#A l'aide de deux « boxplots », représentez côte à côte la distribution du score de relation chez les hommes et les femmes
+
+boxplot(dataset$score.relation)
+
+##Réponse à la quatrième question :
+## Créons des variable rassemblant uniquement les hommes et les femmes
+homme <- which(dataset$sexe == "0")
+femme <- which(dataset$sexe == "1")
+##La fonction par permet d'afficher plusieurs graph en meme temps
+par(mfrow = c(1,2))
+boxplot(dataset$score.relation[homme], main = "Score de relation chez les hommes")
+boxplot(dataset$score.relation[femme], main = "Score de relation chez les femmes")
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

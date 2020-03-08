@@ -1,0 +1,95 @@
+---
+title: "PROJET_R"
+author: "cisse"
+date: "8 mars 2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+```{r}
+# importation du jeu de donnees
+dataset = read.csv2('satisfaction_hopital.csv')
+
+#visualisation des donnees
+View(dataset)
+
+# QUESTION 1 : Pour les trois variables catégorielles du fichier (à vous de déterminer de quelles variables il s'agit)
+#présentez les pourcentages de sujets relevant de chacune des modalités.
+# Les trois variables categorielles sont: service, profession et sexe
+
+#Pour la variable sexe
+eff_sexe = table(dataset$sexe)
+
+#les pourcentages de chaque modalite de la variable sexe
+prop.table(eff_sexe)*100
+
+#Pour la variable profession
+eff_profession = table(dataset$profession)
+#les pourcentages de chaque modalite de la variable profession
+prop.table(eff_profession)*100
+
+#Pour la variable service
+eff_service = table(dataset$service)
+#les pourcentages de chaque modalite de la variable profession
+prop.table(eff_service)*100
+
+#QUESTION 2
+#Pour les autres variables
+#donnez de façon synthétique : moyenne, médiane, écart-type, minimum, maximum, nombre de données disponibles (non manquantes).
+
+
+#Pour utiliser la commande describe, il faudra d'abord installer le package prettyR 
+# il peut se faire de la facon suivante: install.packages('prettyR') et le charger library('prettyR')
+library(prettyR)
+describe(dataset, num.desc = c('mean', 'median', 'sd', 'min', 'max', 'valid.n'))
+
+##Réponse à la quatrième question :
+## Créons des variable rassemblant uniquement les hommes et les femmes
+homme <- which(dataset$sexe == "0")
+femme <- which(dataset$sexe == "1")
+
+smp<-read.csv2("smp2.csv")
+
+#intervalle de Confiance
+describe(smp$age)
+
+#L'intervalle de confiance d'un pourcentage peut être estimé à partir de méthodes qui convergent lorsque la taille de l'échantillon est importante. pour 3 individus présentant une modalité commune (par exemple dépression) parmi un échantillon de 10 personnes tirées au sort. Quel est l'intervalle de confiance de la prévalence de la dépression: 30% ?
+#install.packages("binom")
+library(binom)
+binom.confint(3,10,method = "all")
+binom.confint(3,10,method = "prop.test")
+binom.confint(3,10,method = "exact")
+binom.confint(300,1000,method = "all")
+
+str(smp)
+cor(smp$age, smp$n.enfant,use="complete.obs")
+
+```
+
+
+```{r}
+#QUESTION 3
+#Faites un histogramme du score de relation (score.relation).
+
+hist(dataset$score.relation,xlab = "Qualité de la relation patient",ylab = "Nb. patient", main="Distribution du score des relations",col="grey")
+
+#QUESTION 4
+#A l'aide de deux « boxplots », représentez côte à côte la distribution du score de relation chez les hommes et les femmes
+##La fonction par permet d'afficher plusieurs graph en meme temps
+par(mfrow = c(1,2))
+boxplot(dataset$score.relation[homme], main = "Score de relation chez les hommes")
+boxplot(dataset$score.relation[femme], main = "Score de relation chez les femmes")
+
+
+
+#L'objectif est de pouvoir estimer la force de corrélation entre 2 variables. Cette force peut être estimée par le coefficient de corrélation de Pearson: r 
+# Si r = 0 la corrélation est nulle: les variables sous jacentes sont indépendantes (ssi elles suivent une loi normale) 
+# Si r = +/- 1 x et y sont mutuellement déterminées: y=ax+by=ax+b
+#L'interprétation de ce coefficient n'est pas facile. Le plus simple est de représenter graphiquement les 2 variables X et y afin de visualiser leur corrélation
+
+plot(jitter(smp$age),jitter(smp$n.enfant))
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
